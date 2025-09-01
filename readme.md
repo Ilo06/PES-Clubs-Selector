@@ -2,6 +2,10 @@
 
 A simple web tool that randomly selects two different football clubs from a predefined list. The tool ensures that the same clubs are not repeated until all clubs have been used once. It provides a visual interface to display the selected clubs and keeps a short history of previously selected pairs.
 
+
+DEPLOYED HERE
+  https://ilo06.github.io/PES-Clubs-Selector/
+
 ## Features
 - Randomly select two different clubs.
 - Prevents repeats until all clubs have been used.
