@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Sélecteur aléatoire de clubs</title>
+  <style>
+    :root{font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial;margin:0}
+    body{display:flex;align-items:center;justify-content:center;min-height:100vh;background:linear-gradient(180deg,#f8fafc,#eef2ff);padding:20px}
+    .card{width:100%;max-width:540px;background:white;border-radius:12px;box-shadow:0 8px 30px rgba(20,20,40,0.08);padding:24px}
+    h1{margin:0 0 12px;font-size:20px}
+    p.lead{margin:0 0 18px;color:#374151}
+    .clubs{display:flex;gap:12px;align-items:center;margin-bottom:18px}
+    .club{flex:1;padding:18px;border-radius:8px;border:1px dashed #e6e9ef;text-align:center;font-weight:700}
+    .controls{display:flex;gap:8px}
+    button{flex:1;padding:10px 12px;border-radius:8px;border:0;background:#6366f1;color:white;font-weight:600;cursor:pointer}
+    button.secondary{background:#e6e7ff;color:#202040}
+    .used{margin-top:16px;font-size:14px;color:#6b7280}
+    .used-list{margin-top:8px;display:flex;flex-direction:column;gap:6px;max-height:160px;overflow:auto}
+    .pair{padding:8px 10px;border-radius:6px;background:#f8fafc;border:1px solid #eef2ff}
+    footer{margin-top:14px;font-size:12px;color:#9ca3af;text-align:right}
+    @media (max-width:480px){.clubs{flex-direction:column}.controls{flex-direction:column}}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Sélecteur aléatoire de clubs</h1>
+    <p class="lead">Cliquez sur <strong>Choisir</strong> pour obtenir deux clubs différents. Les paires ne se répètent pas tant que toutes les équipes n'ont pas été utilisées.</p>
+
+    <div class="clubs">
+      <div id="club1" class="club">—</div>
+      <div id="club2" class="club">—</div>
+    </div>
+
+    <div class="controls">
+      <button id="pick">Choisir</button>
+      <button id="reset" class="secondary">Réinitialiser</button>
+    </div>
+
+    <div class="used">
+      <div>Historique des paires utilisées :</div>
+      <div id="usedList" class="used-list"></div>
+    </div>
+
+  </div>
+
+  <script>
+    const clubs = [
+      "Arsenal",
+      "Manchester City",
+      "Manchester United",
+      "Liverpool",
+      "Tottenham",
+      "FC Barcelone",
+      "Real Madrid",
+      "Atletico Madrid",
+      "AC Milan",
+      "Inter Milan",
+      "Napoli",
+      "FC Bayern Munchen",
+      "Bayer Leverkusen",
+      "Borussia Dortmund",
+      "Paris Saint Germain",
+      "RB Leipzig"
+    ];
+
+    let usedClubs = []; 
+    const club1El = document.getElementById('club1');
+    const club2El = document.getElementById('club2');
+    const usedListEl = document.getElementById('usedList');
+    const pickBtn = document.getElementById('pick');
+    const resetBtn = document.getElementById('reset');
+
+    function pickTwoClubs() {
+      if (usedClubs.length >= clubs.length) usedClubs = [];
+
+      const available = clubs.filter(c => !usedClubs.includes(c));
+
+      const pool = available.length < 2 ? clubs.slice() : available.slice();
+
+      let i = Math.floor(Math.random() * pool.length);
+      let j;
+      do { j = Math.floor(Math.random() * pool.length); } while (j === i);
+
+      const club1 = pool[i];
+      const club2 = pool[j];
+
+      usedClubs.push(club1, club2);
+
+      return { club1, club2 };
+    }
+
+    function renderPair(pair) {
+      club1El.textContent = pair.club1;
+      club2El.textContent = pair.club2;
+
+      const node = document.createElement('div');
+      node.className = 'pair';
+      node.textContent = pair.club1 + '  —  ' + pair.club2;
+      usedListEl.prepend(node);
+
+      while (usedListEl.children.length > 30) usedListEl.removeChild(usedListEl.lastChild);
+    }
+
+    pickBtn.addEventListener('click', () => {
+      const pair = pickTwoClubs();
+      renderPair(pair);
+    });
+
+    resetBtn.addEventListener('click', () => {
+      usedClubs = [];
+      usedListEl.innerHTML = '';
+      club1El.textContent = '—';
+      club2El.textContent = '—';
+    });
+
+  </script>
+</body>
+</html>
